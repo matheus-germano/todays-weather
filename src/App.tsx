@@ -1,7 +1,14 @@
+import { BrowserRouter } from 'react-router-dom'
+import { Router } from './router'
+
 import './styles/index.css'
 
 function App() {
-  return <h1>Today's Weather</h1>
+  return (
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
+  )
 }
 
 export default App
