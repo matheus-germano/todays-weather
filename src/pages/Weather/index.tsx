@@ -1,40 +1,11 @@
 import { ArrowBendLeftUp, ArrowBendRightDown, Wind } from 'phosphor-react'
 import { useEffect, useState } from 'react'
 
-interface LocationCountryProps {
-  name: string
-  flag: string
-  countryCode: string
-}
-
-interface LocationProps {
-  city: string
-  state: string
-  country: LocationCountryProps
-}
-
-interface DayForecastConditionProps {
-  icon: string
-  text: string
-}
-
-interface NextDaysForecastProps {
-  date: Date
-  condition: DayForecastConditionProps
-  chanceOfRain: number
-  maxTempInCelsius: number
-  minTempInCelsius: number
-}
-
-interface CurrentDayForecastProps {
-  date: Date
-  condition: DayForecastConditionProps
-  chanceOfRain: number
-  currentTemperature: number
-  maxTemperatureInCelsius: number
-  minTemperatureInCelsius: number
-  windKilometersPerHour: number
-}
+import {
+  CurrentDayForecastProps,
+  LocationProps,
+  NextDaysForecastProps,
+} from '../../@types/weather'
 
 export function Weather() {
   const [location, setLocation] = useState<LocationProps>()
