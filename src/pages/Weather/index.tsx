@@ -113,40 +113,53 @@ export function Weather() {
   }, [])
 
   return (
-    <div>
-      <div>
-        <h3>{location?.city}</h3>
-        <div>
-          <p>{location?.country.countryCode}</p>
-          <img src={location?.country.flag} alt={location?.country.name} />
+    <div className="w-full h-full min-h-screen flex items-center justify-center">
+      <div className="max-w-xl bg-[#fff] flex flex-col rounded-lg p-5 gap-8">
+        <div className="flex justify-between">
+          <h3>{location?.city}</h3>
+          <div className="flex gap-2">
+            <p>{location?.country.countryCode}</p>
+            <img
+              className="h-6 rounded-lg"
+              src={location?.country.flag}
+              alt={location?.country.name}
+            />
+          </div>
         </div>
-      </div>
-      <div>
-        <p>{currentDayForecast?.condition?.text}</p>
-        <div>
-          <h2>{currentDayForecast?.currentTemperature} &deg;C</h2>
-          <img src={currentDayForecast?.condition?.icon} alt="" />
+        <div className="flex flex-col gap-4 justify-center items-center">
+          <h2 className="font-black text-5xl">
+            <span className="text-8xl">
+              {currentDayForecast?.currentTemperature}
+            </span>{' '}
+            &deg;C
+          </h2>
+          <div className="flex gap-2 justify-center items-center">
+            <span>
+              <img src={currentDayForecast?.condition?.icon} alt="" />
+            </span>
+            <p>{currentDayForecast?.condition?.text}</p>
+          </div>
         </div>
-      </div>
-      <div>
-        <p>
-          <span>
-            <ArrowBendRightDown size={32} />
-          </span>{' '}
-          {currentDayForecast?.minTemperatureInCelsius} &deg;C
-        </p>
-        <p>
-          <span>
-            <ArrowBendLeftUp size={32} />
-          </span>{' '}
-          {currentDayForecast?.maxTemperatureInCelsius} &deg;C
-        </p>
-        <p>
-          <span>
-            <Wind size={32} />
-          </span>
-          {currentDayForecast?.windKilometersPerHour} K/h
-        </p>
+        <div className="flex justify-center gap-4">
+          <p className="flex gap-2 items-center">
+            <span>
+              <ArrowBendRightDown size={24} />
+            </span>{' '}
+            {currentDayForecast?.minTemperatureInCelsius} &deg;C
+          </p>
+          <p className="flex gap-2 items-center">
+            <span>
+              <ArrowBendLeftUp size={24} />
+            </span>{' '}
+            {currentDayForecast?.maxTemperatureInCelsius} &deg;C
+          </p>
+          <p className="flex gap-2 items-center">
+            <span>
+              <Wind size={24} />
+            </span>
+            {currentDayForecast?.windKilometersPerHour} K/h
+          </p>
+        </div>
       </div>
     </div>
   )
