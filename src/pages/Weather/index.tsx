@@ -24,8 +24,7 @@ export function Weather() {
 
   function fetchUserIp() {
     fetch(
-      `https://api.ipgeolocation.io/ipgeo?apiKey=${
-        import.meta.env.VITE_IP_GEOLOCATION_KEY
+      `https://api.ipgeolocation.io/ipgeo?apiKey=${import.meta.env.VITE_IP_GEOLOCATION_KEY
       }`,
     )
       .then((response) => response.json())
@@ -46,8 +45,7 @@ export function Weather() {
 
   function fetchForecastData() {
     fetch(
-      `https://api.weatherapi.com/v1/forecast.json?key=${
-        import.meta.env.VITE_WEATHER_API_KEY
+      `https://api.weatherapi.com/v1/forecast.json?key=${import.meta.env.VITE_WEATHER_API_KEY
       }&q=${location?.city ?? 'Sao_Paulo'}&days=7&aqi=no&alerts=yes`,
     )
       .then((response) => response.json())
@@ -135,7 +133,7 @@ export function Weather() {
             </p>
           </div>
         </div>
-        <div className="w-full max-w-full sm:max-w-none flex grid-cols-none sm:grid sm:grid-cols-3 gap-4 overflow-x-auto snap-mandatory snap-x">
+        <div className="w-full max-w-full sm:max-w-none flex grid-cols-none sm:grid sm:grid-cols-3 gap-2 overflow-x-auto snap-mandatory snap-x">
           {nextDaysForecast.length > 0 ? (
             nextDaysForecast.map((day) => (
               <div
@@ -143,7 +141,13 @@ export function Weather() {
                 className="max-w-[250px] bg-[#fff] flex flex-col rounded-lg p-5 gap-8 shrink-0 snap-center sm:m-0 mb-2"
               >
                 <div className="flex justify-between">
-                  <p>{new Intl.DateTimeFormat().format(day.date)}</p>
+                  <p className="text-sm">
+                    {new Intl.DateTimeFormat('pt-BR', {
+                      weekday: 'long',
+                      month: 'numeric',
+                      day: 'numeric',
+                    }).format(day.date)}
+                  </p>
                   <img
                     className="h-6 rounded-lg"
                     src={day.condition.icon}
