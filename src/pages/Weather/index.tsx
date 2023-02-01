@@ -7,6 +7,8 @@ import {
   NextDaysForecastProps,
 } from '../../@types/weather'
 
+import { WeatherApiResponseMapper } from '../../services/mappers'
+
 export function Weather() {
   const [location, setLocation] = useState<LocationProps>()
   const [currentDayForecast, setCurrentDayForecast] =
@@ -17,7 +19,8 @@ export function Weather() {
 
   function fetchUserIp() {
     fetch(
-      `https://api.ipgeolocation.io/ipgeo?apiKey=${import.meta.env.VITE_IP_GEOLOCATION_KEY
+      `https://api.ipgeolocation.io/ipgeo?apiKey=${
+        import.meta.env.VITE_IP_GEOLOCATION_KEY
       }`,
     )
       .then((response) => response.json())
@@ -38,8 +41,9 @@ export function Weather() {
 
   function fetchForecastData() {
     fetch(
-      `https://api.weatherapi.com/v1/forecast.json?key=${import.meta.env.VITE_WEATHER_API_KEY
-      }&q=Campinas&days=7&aqi=no&alerts=yes`,
+      `https://api.weatherapi.com/v1/forecast.json?key=${
+        import.meta.env.VITE_WEATHER_API_KEY
+      }&q=${location?.city ?? 'Sao_Paulo'}&days=7&aqi=no&alerts=yes`,
     )
       .then((response) => response.json())
       .then((response) => {
@@ -60,18 +64,9 @@ export function Weather() {
         }
 
         const tempNextDaysForecast: NextDaysForecastProps[] =
-          response.forecast?.forecastday?.map((day: any) => {
-            return {
-              date: new Date(day.date),
-              condition: {
-                icon: day.day.condition.icon,
-                text: day.day.condition.text,
-              },
-              chanceOfRain: day.day.daily_chance_of_rain,
-              maxTempInCelsius: day.day.maxtemp_c,
-              minTempInCelsius: day.day.mintemp_c,
-            } as NextDaysForecastProps
-          })
+          response.forecast?.forecastday?.map((day: any) =>
+            WeatherApiResponseMapper(day),
+          )
 
         setCurrentDayForecast(tempCurrentDayForecast)
         setNextDaysForecastProps(tempNextDaysForecast)
@@ -132,6 +127,11 @@ export function Weather() {
           </p>
         </div>
       </div>
+      {nextDaysForecast.length > 0 ? (
+        nextDaysForecast.map((day): NextDaysForecastProps => <p>{day.date}</p>)
+      ) : (
+        <p>There is no information about the next 6 days!</p>
+      )}
     </div>
   )
 }
