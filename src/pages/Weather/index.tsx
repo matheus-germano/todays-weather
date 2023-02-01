@@ -24,7 +24,8 @@ export function Weather() {
 
   function fetchUserIp() {
     fetch(
-      `https://api.ipgeolocation.io/ipgeo?apiKey=${import.meta.env.VITE_IP_GEOLOCATION_KEY
+      `https://api.ipgeolocation.io/ipgeo?apiKey=${
+        import.meta.env.VITE_IP_GEOLOCATION_KEY
       }`,
     )
       .then((response) => response.json())
@@ -45,7 +46,8 @@ export function Weather() {
 
   function fetchForecastData() {
     fetch(
-      `https://api.weatherapi.com/v1/forecast.json?key=${import.meta.env.VITE_WEATHER_API_KEY
+      `https://api.weatherapi.com/v1/forecast.json?key=${
+        import.meta.env.VITE_WEATHER_API_KEY
       }&q=${location?.city ?? 'Sao_Paulo'}&days=7&aqi=no&alerts=yes`,
     )
       .then((response) => response.json())
