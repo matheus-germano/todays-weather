@@ -1,4 +1,4 @@
-import { NextDaysForecastProps } from '../@types/weather'
+import { LocationCountryProps, NextDaysForecastProps } from '../@types/weather'
 
 export function WeatherApiResponseMapper(data: any): NextDaysForecastProps {
   return {
@@ -10,5 +10,15 @@ export function WeatherApiResponseMapper(data: any): NextDaysForecastProps {
     chanceOfRain: data.day.daily_chance_of_rain,
     maxTempInCelsius: data.day.maxtemp_c,
     minTempInCelsius: data.day.mintemp_c,
+  }
+}
+
+export function RestCountriesApiResponseMapper(
+  data: any,
+): LocationCountryProps {
+  return {
+    name: data.name,
+    flag: data.flag,
+    countryCode: data.alpha3Code,
   }
 }

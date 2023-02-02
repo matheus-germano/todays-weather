@@ -1,18 +1,25 @@
 import {
   ArrowBendLeftUp,
   ArrowBendRightDown,
+  CaretDown,
+  Check,
   CloudRain,
   Wind,
 } from 'phosphor-react'
 import { useEffect, useState } from 'react'
+import * as Select from '@radix-ui/react-select'
 
 import {
   CurrentDayForecastProps,
+  LocationCountryProps,
   LocationProps,
   NextDaysForecastProps,
 } from '../../@types/weather'
 
-import { WeatherApiResponseMapper } from '../../services/mappers'
+import {
+  RestCountriesApiResponseMapper,
+  WeatherApiResponseMapper,
+} from '../../services/mappers'
 
 export function Weather() {
   const [location, setLocation] = useState<LocationProps>()
@@ -21,6 +28,7 @@ export function Weather() {
   const [nextDaysForecast, setNextDaysForecastProps] = useState<
     NextDaysForecastProps[]
   >([])
+  const [countries, setCountries] = useState<LocationCountryProps[]>([])
 
   function fetchUserIp() {
     fetch(
@@ -46,7 +54,7 @@ export function Weather() {
   function fetchForecastData() {
     fetch(
       `https://api.weatherapi.com/v1/forecast.json?key=${import.meta.env.VITE_WEATHER_API_KEY
-      }&q=${location?.city ?? 'Sao_Paulo'}&days=7&aqi=no&alerts=yes`,
+      }&q=${location?.city ?? 'Sao Paulo'}&days=7&aqi=no&alerts=yes`,
     )
       .then((response) => response.json())
       .then((response) => {
@@ -78,18 +86,66 @@ export function Weather() {
       })
   }
 
+  function getCountries() {
+    fetch(`https://restcountries.com/v2/all`)
+      .then((response) => response.json())
+      .then((response) => {
+        const tempCountries: LocationCountryProps[] = response.map(
+          (country: any) => RestCountriesApiResponseMapper(country),
+        )
+
+        setCountries(tempCountries)
+      })
+  }
+
   useEffect(() => {
     fetchUserIp()
     fetchForecastData()
+    getCountries()
   }, [])
 
+  useEffect(() => {
+    fetchForecastData()
+  }, [location])
+
   return (
-    <div className="w-screen h-screen min-h-screen flex flex-col items-center justify-center">
-      <div className="w-full max-w-2xl flex flex-col gap-4 p-4">
+    <div className="max-w-7xl h-screen min-h-screen flex flex-col md:flex-row justify-center mx-auto p-4 gap-4">
+      <div className="w-full md:max-w-xs flex flex-col gap-2">
+        <Select.Root>
+          <Select.Trigger className="bg-white py-3 px-4 rounded text-sm text-zinc-500 flex items-center justify-between">
+            <Select.Value placeholder="Select a country" />
+            <Select.Icon>
+              <CaretDown size={24} />
+            </Select.Icon>
+          </Select.Trigger>
+
+          <Select.Portal>
+            <Select.Content className="bg-white shadow-md rounded p-2 text-zinc-500 overflow-hidden">
+              <Select.Viewport>
+                {countries.map((country) => (
+                  <Select.SelectItem
+                    key={country.countryCode}
+                    value={country.name}
+                    className="flex items-center rounded p-2 gap-2 text-sm hover:bg-[#f1f2f5] outline-none cursor-pointer"
+                  >
+                    <Select.SelectItemText>
+                      {country.name}
+                    </Select.SelectItemText>
+                    <Select.SelectItemIndicator>
+                      <Check />
+                    </Select.SelectItemIndicator>
+                  </Select.SelectItem>
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
+      </div>
+      <div className="w-full md:max-w-2xl flex flex-col gap-4">
         <div className="bg-[#fff] flex flex-col rounded-lg p-5 gap-8">
           <div className="flex justify-between">
             <h3>{location?.city}</h3>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <p>{location?.country.countryCode}</p>
               <img
                 className="h-4 rounded-lg"
@@ -133,12 +189,12 @@ export function Weather() {
             </p>
           </div>
         </div>
-        <div className="w-full max-w-full sm:max-w-none flex grid-cols-none sm:grid sm:grid-cols-3 gap-2 overflow-x-auto snap-mandatory snap-x">
+        <div className="w-full max-w-full sm:max-w-none flex grid-cols-none sm:grid sm:grid-cols-3 gap-4 overflow-x-auto snap-mandatory snap-x">
           {nextDaysForecast.length > 0 ? (
             nextDaysForecast.map((day) => (
               <div
                 key={String(day.date)}
-                className="max-w-[250px] bg-[#fff] flex flex-col rounded-lg p-5 gap-8 shrink-0 snap-center sm:m-0 mb-2"
+                className="w-screen sm:max-w-[250px] sm:w-auto bg-[#fff] flex flex-col rounded-lg p-5 gap-8 shrink-0 snap-center sm:m-0 mb-2"
               >
                 <div className="flex justify-between">
                   <p className="text-sm">
@@ -166,7 +222,7 @@ export function Weather() {
                     <span>
                       <ArrowBendLeftUp size={24} />
                     </span>{' '}
-                    {day.minTempInCelsius} &deg;C
+                    {day.maxTempInCelsius} &deg;C
                   </h1>
                 </div>
                 <div className="flex justify-center gap-4">
