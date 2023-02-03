@@ -6,7 +6,7 @@ import {
   CloudRain,
   Wind,
 } from 'phosphor-react'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import * as Select from '@radix-ui/react-select'
 
 import {
@@ -29,6 +29,9 @@ export function Weather() {
     NextDaysForecastProps[]
   >([])
   const [countries, setCountries] = useState<LocationCountryProps[]>([])
+  const [selectedCountry, setSelectedCountry] = useState<LocationCountryProps>(
+    {},
+  )
 
   function fetchUserIp() {
     fetch(
@@ -108,10 +111,21 @@ export function Weather() {
     fetchForecastData()
   }, [location])
 
+  function getCountryCities(selectedCountry: string) {
+    fetch('https://countriesnow.space/api/v0.1/countries/capital', {
+      method: 'POST',
+      body: JSON.stringify({
+        iso2: selectedCountry,
+      }),
+    })
+      .then((response) => response.json())
+      .then((response) => console.log(response))
+  }
+
   return (
     <div className="max-w-7xl h-screen min-h-screen flex flex-col md:flex-row justify-center mx-auto p-4 gap-4">
       <div className="w-full md:max-w-xs flex flex-col gap-4">
-        <Select.Root>
+        <Select.Root onValueChange={getCountryCities}>
           <Select.Trigger className="bg-white py-3 px-4 rounded text-sm text-zinc-500 flex items-center justify-between">
             <Select.Value placeholder="Select a country" />
             <Select.Icon>
@@ -125,7 +139,7 @@ export function Weather() {
                 {countries.map((country) => (
                   <Select.SelectItem
                     key={country.countryCode}
-                    value={country.name}
+                    value={country.countryCode}
                     className="flex items-center rounded p-2 gap-2 text-sm hover:bg-[#f1f2f5] outline-none cursor-pointer"
                   >
                     <Select.SelectItemText>
@@ -141,7 +155,7 @@ export function Weather() {
           </Select.Portal>
         </Select.Root>
 
-        <Select.Root disabled={true}>
+        <Select.Root disabled={Object.keys(selectedCountry).length === 0}>
           <Select.Trigger className="bg-white py-3 px-4 rounded text-sm text-zinc-500 flex items-center justify-between disabled:cursor-not-allowed">
             <Select.Value placeholder="Select a city" />
             <Select.Icon>

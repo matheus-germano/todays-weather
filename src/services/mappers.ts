@@ -19,6 +19,6 @@ export function RestCountriesApiResponseMapper(
   return {
     name: data.name,
     flag: data.flag,
-    countryCode: data.alpha3Code,
+    countryCode: data.alpha2Code,
   }
 }
