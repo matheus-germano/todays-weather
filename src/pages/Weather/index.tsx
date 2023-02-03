@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import * as Select from '@radix-ui/react-select'
 import {
   ArrowBendLeftUp,
   ArrowBendRightDown,
@@ -6,8 +8,6 @@ import {
   CloudRain,
   Wind,
 } from 'phosphor-react'
-import { ChangeEvent, useEffect, useState } from 'react'
-import * as Select from '@radix-ui/react-select'
 
 import {
   CurrentDayForecastProps,
