@@ -22,7 +22,7 @@ import {
 } from '../../services/mappers'
 
 export function Weather() {
-  const [location, setLocation] = useState<LocationProps>()
+  const [location, setLocation] = useState<LocationProps>({})
   const [currentDayForecast, setCurrentDayForecast] =
     useState<CurrentDayForecastProps>({})
   const [nextDaysForecast, setNextDaysForecastProps] = useState<
@@ -54,7 +54,7 @@ export function Weather() {
   function fetchForecastData() {
     fetch(
       `https://api.weatherapi.com/v1/forecast.json?key=${import.meta.env.VITE_WEATHER_API_KEY
-      }&q=${location?.city ?? 'Sao Paulo'}&days=7&aqi=no&alerts=yes`,
+      }&q=${location?.city ?? 'Campinas'}&days=7&aqi=no&alerts=yes`,
     )
       .then((response) => response.json())
       .then((response) => {
@@ -110,10 +110,40 @@ export function Weather() {
 
   return (
     <div className="max-w-7xl h-screen min-h-screen flex flex-col md:flex-row justify-center mx-auto p-4 gap-4">
-      <div className="w-full md:max-w-xs flex flex-col gap-2">
+      <div className="w-full md:max-w-xs flex flex-col gap-4">
         <Select.Root>
           <Select.Trigger className="bg-white py-3 px-4 rounded text-sm text-zinc-500 flex items-center justify-between">
             <Select.Value placeholder="Select a country" />
+            <Select.Icon>
+              <CaretDown size={24} />
+            </Select.Icon>
+          </Select.Trigger>
+
+          <Select.Portal>
+            <Select.Content className="bg-white shadow-md rounded p-2 text-zinc-500 overflow-hidden">
+              <Select.Viewport>
+                {countries.map((country) => (
+                  <Select.SelectItem
+                    key={country.countryCode}
+                    value={country.name}
+                    className="flex items-center rounded p-2 gap-2 text-sm hover:bg-[#f1f2f5] outline-none cursor-pointer"
+                  >
+                    <Select.SelectItemText>
+                      {country.name}
+                    </Select.SelectItemText>
+                    <Select.SelectItemIndicator>
+                      <Check />
+                    </Select.SelectItemIndicator>
+                  </Select.SelectItem>
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
+
+        <Select.Root disabled={true}>
+          <Select.Trigger className="bg-white py-3 px-4 rounded text-sm text-zinc-500 flex items-center justify-between disabled:cursor-not-allowed">
+            <Select.Value placeholder="Select a city" />
             <Select.Icon>
               <CaretDown size={24} />
             </Select.Icon>
@@ -146,11 +176,11 @@ export function Weather() {
           <div className="flex justify-between">
             <h3>{location?.city}</h3>
             <div className="flex items-center gap-2">
-              <p>{location?.country.countryCode}</p>
+              <p>{location?.country?.countryCode}</p>
               <img
                 className="h-4 rounded-lg"
-                src={location?.country.flag}
-                alt={location?.country.name}
+                src={location?.country?.flag}
+                alt={location?.country?.name}
               />
             </div>
           </div>
